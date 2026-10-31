@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -9,7 +10,7 @@ import { Label } from "@/components/ui/label";
 
 type Status = "idle" | "pending" | "success" | "error";
 
-const API_URL = "http://localhost:5000/users";
+const API_URL=`${process.env.NEXT_PUBLIC_SERVER_URL}/users`;
 
 const AddNewUser = () => {
     const [name, setName] = useState("");
@@ -79,7 +80,7 @@ const AddNewUser = () => {
             {status === "error" && (
                 <p className="text-sm text-destructive">
                     Could not add the user. Make sure the API server is running on
-                    localhost:5000 and try again.
+                     and try again.
                 </p>
             )}
             <Button type="submit" disabled={status === "pending"}>

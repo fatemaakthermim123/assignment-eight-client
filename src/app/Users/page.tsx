@@ -6,7 +6,7 @@ import Users from '../component/Users';
 
 const usersPromise=async ()=>
 {
-     const data=await fetch("http://localhost:5000/users");
+     const data=await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`);
     return await data.json();
 }
 const UsersPage = () => {

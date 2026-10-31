@@ -29,10 +29,12 @@ Next.js 16 (App Router) client for an assignment. Companion backend lives in the
 
 ## Backend dependency
 
-- The `/Users` route (`src/app/Users/page.tsx`) fetches `http://localhost:5000/users` at render time. The page fails unless the backend is running.
+- The `/Users` route (`src/app/Users/page.tsx`) fetches `${NEXT_PUBLIC_API_URL}/users` at render time. The page fails unless the backend is running.
+- The `/add-new-user` route (`src/app/component/AddNewUser.tsx`) POSTs JSON `{ name, email }` to the same API.
+- All API calls take the base URL from `NEXT_PUBLIC_API_URL` in **this repo's** `.env` (client-side vars must use the `NEXT_PUBLIC_` prefix to be inlined into the browser bundle). Never hardcode `localhost:5000`. If the env var is unset, requests hit a truncated URL and fail silently — check for a blanked-out host in `AddNewUser.tsx`'s error copy.
 - The API is the sibling repo `../assignment-eight-server` and **persists users in MongoDB** (`insertOne` / `find` on db `assignment-eight`, collection `users`) via the `MONGODB_URI` in its `.env`. Users survive API restarts, but newly written docs only get `_id` — no numeric `id`.
 - Start it with `node index.js` from `../assignment-eight-server` — there is **no `start`/`dev` script and no nodemon**; restart manually after edits. `connectToMongoDB()` runs via top-level await at startup.
-- Start the backend before loading `/Users`, or the page renders an error filler.
+- Start the backend before loading `/Users` or submitting the form, or the page renders an error filler.
 
 ## Stack quirks
 
