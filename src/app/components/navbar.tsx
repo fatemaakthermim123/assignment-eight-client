@@ -24,7 +24,7 @@ export function Navbar() {
         {/* Logo + title */}
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="/BookNook-Logo.png"
+            src="/library.png"
             alt="BookNook logo"
             width={50}
             height={36}
@@ -58,8 +58,8 @@ export function Navbar() {
 
         {/* Register / Login */}
         <div className="flex items-center gap-2">
-          <Button>Register</Button>
-          <Button variant="outline">Login</Button>
+         <Link href="/Register"> <Button>Register</Button></Link>
+         <Link href="/Login"> <Button variant="outline">Login</Button></Link>
         </div>
       </div>
     </header>
