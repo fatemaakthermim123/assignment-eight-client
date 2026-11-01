@@ -1,3 +1,6 @@
+
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -30,15 +33,10 @@ import {
 } from "@/components/ui/sheet";
 import { Toaster, toast } from "@/components/ui/toast";
 import { cn } from "cn";
-import {
-  Loader2Icon,
-  LogOutIcon,
-  MenuIcon,
-  UserIcon,
-} from "lucide-react";
+import { Loader2Icon, LogOutIcon, MenuIcon, UserIcon } from "lucide-react";
 
 const NAV_LINKS = [
-  {label:'Home', href:'/'},
+  { label: "Home", href: "/" },
   { label: "All Books", href: "/all-books" },
   { label: "Add Book", href: "/add-book" },
   { label: "My Books", href: "/my-books" },
@@ -94,7 +92,7 @@ export function Navbar() {
   }
 
   const popoverMenuItemClasses =
-    "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors";
+    "flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors duration-200 hover:bg-muted";
 
   function renderAvatar(size: "sm" | "default") {
     // Gradient hairline ring does not affect layout, the label sits next to it
@@ -102,8 +100,8 @@ export function Navbar() {
       <span
         aria-hidden="true"
         className={cn(
-          "inline-flex shrink-0 rounded-full bg-linear-to-tr from-primary via-brass to-primary p-[1.5px] shadow-sm",
-          size === "sm" ? "size-6" : "size-8",
+          "inline-flex shrink-0 rounded-full bg-linear-to-tr from-primary via-brass to-primary p-[2px] shadow-md",
+          size === "sm" ? "size-6" : "size-9",
         )}
       >
         <Avatar size={size} className="bg-card">
@@ -127,39 +125,55 @@ export function Navbar() {
     return (
       <>
         <Link href="/Register">
-          <Button>Register</Button>
+          <Button className="rounded-full px-5 shadow-md shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30">
+            Register
+          </Button>
         </Link>
         <Link href="/Login">
-          <Button variant="outline">Login</Button>
+          <Button
+            variant="outline"
+            className="rounded-full border-primary/30 px-5 text-primary transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:bg-primary/5 hover:text-primary"
+          >
+            Login
+          </Button>
         </Link>
       </>
     );
   }
 
   return (
-    <header className="border-b border-border bg-background">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
       <Toaster />
+      {/* Thin gold line at the bottom of the header */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-brass/60 to-transparent"
+      />
+
       {/* Mobile slide-out menu — the Sheet root wraps the whole row so every
           trigger (hamburger + mobile avatar) is inside Dialog.Root */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-3 sm:px-4 sm:gap-4 sm:px-6">
-        {/* Mobile hamburger (opens the sheet menu) */}
-        <div className="flex items-center gap-1">
-          <SheetTrigger
-            className={cn(buttonVariants({ variant: "ghost" }), "md:hidden")}
-            aria-label="Open menu"
-          >
-            <MenuIcon />
-          </SheetTrigger>
-            <SheetContent side="left" className="w-2xs p-0 max-w-[80vw]">
-              <SheetHeader className="border-b border-border">
-                <SheetTitle className="flex items-center gap-2.5">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-3 sm:gap-4 sm:px-6">
+          {/* Mobile hamburger (opens the sheet menu) */}
+          <div className="flex items-center gap-1">
+            <SheetTrigger
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "rounded-full md:hidden",
+              )}
+              aria-label="Open menu"
+            >
+              <MenuIcon />
+            </SheetTrigger>
+            <SheetContent side="left" className="w-2xs max-w-[80vw] p-0">
+              <SheetHeader className="border-b border-border bg-linear-to-br from-primary/10 via-background to-brass/10 p-5">
+                <SheetTitle className="flex items-center gap-2.5 font-heading text-xl text-primary">
                   <Image
                     src="/images/library.png"
                     alt="BookNook logo"
                     width={40}
                     height={29}
-                    className="rounded-full object-cover"
+                    className="rounded-full object-cover ring-2 ring-brass/40"
                   />
                   BookNook
                 </SheetTitle>
@@ -171,7 +185,7 @@ export function Navbar() {
               {/* Navigation links */}
               <nav
                 aria-label="Main"
-                className="flex flex-col gap-1 overflow-y-auto p-3"
+                className="flex flex-col gap-1.5 overflow-y-auto p-3"
               >
                 {NAV_LINKS.map((link) => {
                   const isActive = pathname === link.href;
@@ -186,8 +200,10 @@ export function Navbar() {
                             buttonVariants({
                               variant: isActive ? "default" : "ghost",
                             }),
-                            "w-full justify-start px-3",
-                            !isActive && "hover:text-primary",
+                            "h-11 w-full justify-start rounded-xl px-4 text-base",
+                            isActive
+                              ? "shadow-md shadow-primary/20"
+                              : "hover:bg-primary/5 hover:text-primary",
                           )}
                         />
                       }
@@ -199,10 +215,10 @@ export function Navbar() {
               </nav>
 
               {/* Auth actions at the bottom of the sheet */}
-              <div className="mt-auto flex flex-col gap-2 border-t border-border p-4">
+              <div className="mt-auto flex flex-col gap-2 border-t border-border bg-muted/30 p-4">
                 {user ? (
                   <>
-                    <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
+                    <div className="flex items-center gap-3 rounded-xl bg-card p-3 shadow-sm ring-1 ring-border/60">
                       {renderAvatar("default")}
                       <div className="flex min-w-0 flex-col">
                         <span className="truncate font-medium">
@@ -215,7 +231,10 @@ export function Navbar() {
                     </div>
                     <SheetClose
                       render={
-                        <Button variant="outline" className="w-full justify-start">
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start rounded-xl"
+                        >
                           <UserIcon />
                           My Profile
                         </Button>
@@ -223,7 +242,7 @@ export function Navbar() {
                     />
                     <Button
                       variant="ghost"
-                      className="w-full justify-start text-destructive hover:bg-destructive/10"
+                      className="w-full justify-start rounded-xl text-destructive hover:bg-destructive/10"
                       onClick={handleLogout}
                       disabled={loggingOut}
                     >
@@ -240,18 +259,15 @@ export function Navbar() {
                   </>
                 ) : (
                   <div className="flex flex-col gap-2">
-                    <Link
-                      href="/Register"
-                      className="flex"
-                    >
-                      <Button className="w-full justify-center">
+                    <Link href="/Register" className="flex">
+                      <Button className="w-full justify-center rounded-xl shadow-md shadow-primary/20">
                         Register
                       </Button>
                     </Link>
                     <Link href="/Login" className="flex">
                       <Button
                         variant="outline"
-                        className="w-full justify-center"
+                        className="w-full justify-center rounded-xl"
                       >
                         Login
                       </Button>
@@ -260,124 +276,137 @@ export function Navbar() {
                 )}
               </div>
             </SheetContent>
-          {/* Logo + title */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <Image
-              src="/images/library.png"
-              alt="BookNook logo"
-              width={50}
-              height={36}
-              className="rounded-full object-cover "
-            />
-            <span className="font-heading text-xl font-bold text-primary sm:text-2xl">
-              BookNook
-            </span>
-          </Link>
-        </div>
 
-        {/* Middle links — desktop only */}
-        <nav aria-label="Main" className="hidden md:block">
-          <ul className="flex items-center gap-1.5">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      buttonVariants({ variant: isActive ? "default" : "ghost" }),
-                      "hover:bg-transparent hover:text-primary",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+            {/* Logo + title */}
+            <Link href="/" className="group flex items-center gap-2.5">
+              <Image
+                src="/images/library.png"
+                alt="BookNook logo"
+                width={50}
+                height={36}
+                className="rounded-full object-cover ring-2 ring-brass/40 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105"
+              />
+              <span className="font-heading text-xl font-bold tracking-tight text-primary sm:text-2xl">
+                BookNook
+              </span>
+            </Link>
+          </div>
 
-        {/* Auth avatar / register-login — desktop and mobile */}
-        <div className="flex items-center gap-2">
-          {isPending ? (
-            <span
-              className="size-8 shrink-0 animate-pulse rounded-full bg-muted"
-              aria-hidden="true"
-            />
-          ) : user ? (
-            <>
-              {/* Compact avatar on mobile — opens the sheet menu */}
-              <SheetTrigger
-                aria-label="Open account menu"
-                className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50 md:hidden"
-              >
-                {renderAvatar("default")}
-              </SheetTrigger>
+          {/* Middle links — desktop only */}
+          <nav aria-label="Main" className="hidden md:block">
+            <ul className="flex items-center gap-1 rounded-full bg-muted/60 p-1 ring-1 ring-border/60">
+              {NAV_LINKS.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      aria-current={isActive ? "page" : undefined}
+                      className={cn(
+                        buttonVariants({
+                          variant: isActive ? "default" : "ghost",
+                          size: "sm",
+                        }),
+                        "rounded-full px-4 transition-all duration-200",
+                        isActive
+                          ? "shadow-md shadow-primary/25"
+                          : "hover:bg-card hover:text-primary hover:shadow-sm",
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-              {/* Desktop popover menu */}
-              <div className="hidden md:block">
-                <Popover>
-                  <PopoverTrigger
-                    aria-label="Account menu"
-                    className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    {renderAvatar("default")}
-                  </PopoverTrigger>
-                  <PopoverContent
-                    align="end"
-                    className="w-64 gap-0 p-0 ring-ring/40"
-                  >
-                    {/* Username / profile summary */}
-                    <PopoverHeader className="flex-row items-center gap-3 border-b border-border p-3">
+          {/* Auth avatar / register-login — desktop and mobile */}
+          <div className="flex items-center gap-2">
+            {isPending ? (
+              <span
+                className="size-9 shrink-0 animate-pulse rounded-full bg-muted"
+                aria-hidden="true"
+              />
+            ) : user ? (
+              <>
+                {/* Compact avatar on mobile — opens the sheet menu */}
+                <SheetTrigger
+                  aria-label="Open account menu"
+                  className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50 md:hidden"
+                >
+                  {renderAvatar("default")}
+                </SheetTrigger>
+
+                {/* Desktop popover menu */}
+                <div className="hidden md:block">
+                  <Popover>
+                    <PopoverTrigger
+                      aria-label="Account menu"
+                      className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
                       {renderAvatar("default")}
-                      <div className="flex min-w-0 flex-col text-left">
-                        <span className="truncate font-medium">
-                          {user.name}
-                        </span>
-                        <span className="truncate text-xs text-muted-foreground">
-                          {user.email}
-                        </span>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="end"
+                      className="w-64 gap-0 overflow-hidden rounded-2xl p-0 shadow-xl ring-ring/40"
+                    >
+                      {/* Username / profile summary */}
+                      <PopoverHeader className="flex-row items-center gap-3 border-b border-border bg-linear-to-br from-primary/10 via-background to-brass/10 p-4">
+                        {renderAvatar("default")}
+                        <div className="flex min-w-0 flex-col text-left">
+                          <span className="truncate font-medium">
+                            {user.name}
+                          </span>
+                          <span className="truncate text-xs text-muted-foreground">
+                            {user.email}
+                          </span>
+                        </div>
+                      </PopoverHeader>
+                      <div className="flex flex-col gap-1 p-1.5">
+                        <Link
+                          href="/Profile"
+                          className={popoverMenuItemClasses}
+                        >
+                          <UserIcon className="size-4" aria-hidden="true" />
+                          My Profile
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          disabled={loggingOut}
+                          className={cn(
+                            popoverMenuItemClasses,
+                            "text-destructive hover:bg-destructive/10",
+                          )}
+                        >
+                          {loggingOut ? (
+                            <Loader2Icon
+                              className="size-4 animate-spin"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <LogOutIcon
+                              className="size-4"
+                              aria-hidden="true"
+                            />
+                          )}
+                          {loggingOut ? "Logging out…" : "Logout"}
+                        </button>
                       </div>
-                    </PopoverHeader>
-                    <div className="flex flex-col gap-1 p-1.5">
-                      <Link href="/Profile" className={popoverMenuItemClasses}>
-                        <UserIcon className="size-4" aria-hidden="true" />
-                        My Profile
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={handleLogout}
-                        disabled={loggingOut}
-                        className={cn(
-                          popoverMenuItemClasses,
-                          "text-destructive hover:bg-destructive/10",
-                        )}
-                      >
-                        {loggingOut ? (
-                          <Loader2Icon
-                            className="size-4 animate-spin"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <LogOutIcon className="size-4" aria-hidden="true" />
-                        )}
-                        {loggingOut ? "Logging out…" : "Logout"}
-                      </button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </>
+            ) : (
+              /* Desktop: register + login inline */
+              <div className="hidden items-center gap-2 md:flex">
+                {renderAuthActions()}
               </div>
-            </>
-          ) : (
-            /* Desktop: register + login inline */
-            <div className="hidden items-center gap-2 md:flex">
-              {renderAuthActions()}
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        </div>
-        </Sheet>
+      </Sheet>
     </header>
   );
 }
