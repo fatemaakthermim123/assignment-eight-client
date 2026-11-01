@@ -1,11 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
+import { authClient } from "@/lib/auth-client";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Toaster, toast } from "@/components/ui/toast";
 import { cn } from "cn";
+import {
+  Loader2Icon,
+  LogOutIcon,
+  MenuIcon,
+  UserIcon,
+} from "lucide-react";
 
 const NAV_LINKS = [
   {label:'Home', href:'/'},
@@ -17,51 +47,337 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { data: session, isPending, refetch } = authClient.useSession();
+  const user = session?.user;
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Session viewer — check the browser console to see the session data.
+  useEffect(() => {
+    if (isPending) {
+      console.log("BookNook session: checking…");
+    } else if (user) {
+      console.log("BookNook session: logged in as", user);
+    } else {
+      console.log("BookNook session: no user logged in");
+    }
+  }, [isPending, user]);
+
+  // First two letters of the username for the avatar fallback.
+  const initials = user?.name?.trim()
+    ? user.name.trim().slice(0, 2).toUpperCase()
+    : "BN";
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await authClient.signOut();
+      refetch();
+      setMenuOpen(false);
+      router.push("/");
+      toast.add({
+        type: "success",
+        title: "Logged out",
+        description: "See you soon at BookNook!",
+      });
+    } catch {
+      toast.add({
+        type: "error",
+        title: "Logout failed",
+        description: "Could not sign you out. Please try again.",
+      });
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
+  const popoverMenuItemClasses =
+    "flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors";
+
+  function renderAvatar(size: "sm" | "default") {
+    // Gradient hairline ring does not affect layout, the label sits next to it
+    return (
+      <span
+        aria-hidden="true"
+        className={cn(
+          "inline-flex shrink-0 rounded-full bg-linear-to-tr from-primary via-brass to-primary p-[1.5px] shadow-sm",
+          size === "sm" ? "size-6" : "size-8",
+        )}
+      >
+        <Avatar size={size} className="bg-card">
+          {user?.image ? (
+            <AvatarImage
+              src={user.image}
+              alt={user.name}
+              referrerPolicy="no-referrer"
+            />
+          ) : null}
+          <AvatarFallback className="bg-primary font-semibold text-primary-foreground text-[0.6rem] tracking-widest group-data-[size=default]/avatar:text-[0.65rem]">
+            {initials}
+          </AvatarFallback>
+          <AvatarBadge className="bg-emerald-500" />
+        </Avatar>
+      </span>
+    );
+  }
+
+  function renderAuthActions() {
+    return (
+      <>
+        <Link href="/Register">
+          <Button>Register</Button>
+        </Link>
+        <Link href="/Login">
+          <Button variant="outline">Login</Button>
+        </Link>
+      </>
+    );
+  }
 
   return (
     <header className="border-b border-border bg-background">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
-        {/* Logo + title */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image
-            src="/library.png"
-            alt="BookNook logo"
-            width={50}
-            height={36}
-            className="rounded-full object-cover "
-          />
-          <span className="font-heading text-2xl font-bold text-primary">
-            BookNook
-          </span>
-        </Link>
+      <Toaster />
+      {/* Mobile slide-out menu — the Sheet root wraps the whole row so every
+          trigger (hamburger + mobile avatar) is inside Dialog.Root */}
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-3 sm:px-4 sm:gap-4 sm:px-6">
+        {/* Mobile hamburger (opens the sheet menu) */}
+        <div className="flex items-center gap-1">
+          <SheetTrigger
+            className={cn(buttonVariants({ variant: "ghost" }), "md:hidden")}
+            aria-label="Open menu"
+          >
+            <MenuIcon />
+          </SheetTrigger>
+            <SheetContent side="left" className="w-2xs p-0 max-w-[80vw]">
+              <SheetHeader className="border-b border-border">
+                <SheetTitle className="flex items-center gap-2.5">
+                  <Image
+                    src="/images/library.png"
+                    alt="BookNook logo"
+                    width={40}
+                    height={29}
+                    className="rounded-full object-cover"
+                  />
+                  BookNook
+                </SheetTitle>
+                <SheetDescription>
+                  Your corner of the library awaits
+                </SheetDescription>
+              </SheetHeader>
 
-        {/* Middle links */}
-        <nav aria-label="Main" className="flex items-center gap-1.5">
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  buttonVariants({ variant: isActive ? "default" : "ghost" }),
-                  // Hover turns the text wine; tailwind-merge overrides ghost's hover:text-foreground
-                  "hover:bg-transparent hover:text-primary",
-                )}
+              {/* Navigation links */}
+              <nav
+                aria-label="Main"
+                className="flex flex-col gap-1 overflow-y-auto p-3"
               >
-                {link.label}
-              </Link>
-            );
-          })}
+                {NAV_LINKS.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <SheetClose
+                      key={link.href}
+                      render={
+                        <Link
+                          href={link.href}
+                          aria-current={isActive ? "page" : undefined}
+                          className={cn(
+                            buttonVariants({
+                              variant: isActive ? "default" : "ghost",
+                            }),
+                            "w-full justify-start px-3",
+                            !isActive && "hover:text-primary",
+                          )}
+                        />
+                      }
+                    >
+                      {link.label}
+                    </SheetClose>
+                  );
+                })}
+              </nav>
+
+              {/* Auth actions at the bottom of the sheet */}
+              <div className="mt-auto flex flex-col gap-2 border-t border-border p-4">
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
+                      {renderAvatar("default")}
+                      <div className="flex min-w-0 flex-col">
+                        <span className="truncate font-medium">
+                          {user.name}
+                        </span>
+                        <span className="truncate text-xs text-muted-foreground">
+                          {user.email}
+                        </span>
+                      </div>
+                    </div>
+                    <SheetClose
+                      render={
+                        <Button variant="outline" className="w-full justify-start">
+                          <UserIcon />
+                          My Profile
+                        </Button>
+                      }
+                    />
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-destructive hover:bg-destructive/10"
+                      onClick={handleLogout}
+                      disabled={loggingOut}
+                    >
+                      {loggingOut ? (
+                        <Loader2Icon
+                          className="size-4 animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <LogOutIcon />
+                      )}
+                      {loggingOut ? "Logging out…" : "Logout"}
+                    </Button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href="/Register"
+                      className="flex"
+                    >
+                      <Button className="w-full justify-center">
+                        Register
+                      </Button>
+                    </Link>
+                    <Link href="/Login" className="flex">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-center"
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          {/* Logo + title */}
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image
+              src="/images/library.png"
+              alt="BookNook logo"
+              width={50}
+              height={36}
+              className="rounded-full object-cover "
+            />
+            <span className="font-heading text-xl font-bold text-primary sm:text-2xl">
+              BookNook
+            </span>
+          </Link>
+        </div>
+
+        {/* Middle links — desktop only */}
+        <nav aria-label="Main" className="hidden md:block">
+          <ul className="flex items-center gap-1.5">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      buttonVariants({ variant: isActive ? "default" : "ghost" }),
+                      "hover:bg-transparent hover:text-primary",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
-        {/* Register / Login */}
+        {/* Auth avatar / register-login — desktop and mobile */}
         <div className="flex items-center gap-2">
-         <Link href="/Register"> <Button>Register</Button></Link>
-         <Link href="/Login"> <Button variant="outline">Login</Button></Link>
+          {isPending ? (
+            <span
+              className="size-8 shrink-0 animate-pulse rounded-full bg-muted"
+              aria-hidden="true"
+            />
+          ) : user ? (
+            <>
+              {/* Compact avatar on mobile — opens the sheet menu */}
+              <SheetTrigger
+                aria-label="Open account menu"
+                className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50 md:hidden"
+              >
+                {renderAvatar("default")}
+              </SheetTrigger>
+
+              {/* Desktop popover menu */}
+              <div className="hidden md:block">
+                <Popover>
+                  <PopoverTrigger
+                    aria-label="Account menu"
+                    className="cursor-pointer rounded-full outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    {renderAvatar("default")}
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="end"
+                    className="w-64 gap-0 p-0 ring-ring/40"
+                  >
+                    {/* Username / profile summary */}
+                    <PopoverHeader className="flex-row items-center gap-3 border-b border-border p-3">
+                      {renderAvatar("default")}
+                      <div className="flex min-w-0 flex-col text-left">
+                        <span className="truncate font-medium">
+                          {user.name}
+                        </span>
+                        <span className="truncate text-xs text-muted-foreground">
+                          {user.email}
+                        </span>
+                      </div>
+                    </PopoverHeader>
+                    <div className="flex flex-col gap-1 p-1.5">
+                      <Link href="/Profile" className={popoverMenuItemClasses}>
+                        <UserIcon className="size-4" aria-hidden="true" />
+                        My Profile
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        disabled={loggingOut}
+                        className={cn(
+                          popoverMenuItemClasses,
+                          "text-destructive hover:bg-destructive/10",
+                        )}
+                      >
+                        {loggingOut ? (
+                          <Loader2Icon
+                            className="size-4 animate-spin"
+                            aria-hidden="true"
+                          />
+                        ) : (
+                          <LogOutIcon className="size-4" aria-hidden="true" />
+                        )}
+                        {loggingOut ? "Logging out…" : "Logout"}
+                      </button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </>
+          ) : (
+            /* Desktop: register + login inline */
+            <div className="hidden items-center gap-2 md:flex">
+              {renderAuthActions()}
+            </div>
+          )}
         </div>
-      </div>
+        </div>
+        </Sheet>
     </header>
   );
 }
