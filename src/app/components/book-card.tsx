@@ -22,6 +22,9 @@ export type Book = {
   category: string;
   bookImage: string;
   shortDescription?: string;
+   addedByName?: string;
+  addedByEmail?: string;
+  availableCopies?: number
 };
 
 type BookCardProps = {

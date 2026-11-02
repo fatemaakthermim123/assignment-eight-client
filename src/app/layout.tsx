@@ -3,6 +3,7 @@ import {  Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import { Navbar } from "@/app/components/navbar";
+import { Suspense } from "react";
 
 
  
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body
         className={`${playfairDisplay.variable} min-h-full flex flex-col font-body`}
       >
+      
         <Navbar />
         <main className="flex-1">{children}</main>
       </body>
