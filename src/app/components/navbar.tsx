@@ -231,15 +231,18 @@ export function Navbar() {
                     </div>
                     <SheetClose
                       render={
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start rounded-xl"
-                        >
-                          <UserIcon />
-                          My Profile
-                        </Button>
+                        <Link
+                          href="/profile"
+                          className={cn(
+                            buttonVariants({ variant: "outline" }),
+                            "w-full justify-start rounded-xl",
+                          )}
+                        />
                       }
-                    />
+                    >
+                      <UserIcon />
+                      My Profile
+                    </SheetClose>
                     <Button
                       variant="ghost"
                       className="w-full justify-start rounded-xl text-destructive hover:bg-destructive/10"
@@ -365,7 +368,7 @@ export function Navbar() {
                       </PopoverHeader>
                       <div className="flex flex-col gap-1 p-1.5">
                         <Link
-                          href="/Profile"
+                          href="/profile"
                           className={popoverMenuItemClasses}
                         >
                           <UserIcon className="size-4" aria-hidden="true" />
