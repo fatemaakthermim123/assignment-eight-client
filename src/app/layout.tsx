@@ -4,6 +4,8 @@ import "./globals.css";
 
 import { Navbar } from "@/app/components/navbar";
 import { Suspense } from "react";
+import Footer from "./components/footer";
+
 
 
  
@@ -25,8 +27,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className={`${playfairDisplay.variable} min-h-full flex flex-col font-body`}
       >
       
-        <Navbar />
-        <main className="flex-1">{children}</main>
+        <Suspense><Navbar /></Suspense>
+        <main className="flex-1">{children}
+          <Footer></Footer>
+        </main>
       </body>
     </html>
   );
