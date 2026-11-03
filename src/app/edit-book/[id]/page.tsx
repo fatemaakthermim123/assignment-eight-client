@@ -45,7 +45,7 @@ const EditBookPage = () => {
       category: String(fd.get("category")),
       bookImage: String(fd.get("bookImage")).trim(),
       shortDescription: String(fd.get("shortDescription")).trim(),
-      availableCopies: Number(fd.get("availableCopies")),
+            availableCopies: Number(fd.get("availableCopies")),
     };
 
     const res = await fetch(`${API_URL}/${id}`, {

@@ -53,7 +53,7 @@ const AddBookPage = () => {
       category: String(fd.get("category")),
       bookImage: String(fd.get("bookImage")).trim(),
       shortDescription: String(fd.get("shortDescription")).trim(),
-      availableCopies: Number(fd.get("availableCopies")),
+            availableCopies: Number(fd.get("availableCopies")),
       addedByName: user.name,
       addedByEmail: user.email,
       addedAt: new Date().toISOString(),
