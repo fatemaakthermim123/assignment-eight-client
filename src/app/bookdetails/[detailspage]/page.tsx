@@ -18,7 +18,7 @@ import {
   UserRoundPlusIcon,
 } from "lucide-react";
 
-const ALL_BOOKS_URL = "http://localhost:5000/all-books";
+const ALL_BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 type DetailsPageProps = {
   params: Promise<{ detailspage: string }>;

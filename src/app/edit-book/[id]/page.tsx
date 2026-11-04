@@ -15,9 +15,11 @@ import { toast } from "@/components/ui/toast";
 import { cn } from "cn";
 import { LockIcon, PencilIcon, SaveIcon } from "lucide-react";
 
-const API_URL = "http://localhost:5000/all-books";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
+
+   
 
 const EditBookPage = () => {
   const { id } = useParams<{ id: string }>();

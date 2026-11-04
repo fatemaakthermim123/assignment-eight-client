@@ -20,7 +20,7 @@ import {
   UserRoundIcon,
 } from "lucide-react";
 
-const BOOKS_URL = "http://localhost:5000/all-books";
+const BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
 

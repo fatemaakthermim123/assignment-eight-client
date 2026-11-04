@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import { cn } from "cn";
 
-const API_URL = "http://localhost:5000/all-books";
+const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 type MyBookCardProps = {
   book: Book;
@@ -125,7 +125,7 @@ export function MyBookCard({ book }: MyBookCardProps) {
           {/* Actions */}
           <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
             <Link
-              href={`/${book._id}`}
+              href={` bookdetails/${book._id}`}
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
                 "rounded-xl border-border/70 transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground",

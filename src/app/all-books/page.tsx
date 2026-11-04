@@ -4,7 +4,9 @@
 import { BookCard, type Book } from "@/app/components/book-card";
 import { BookOpenTextIcon, LibraryBigIcon } from "lucide-react";
 
-const ALL_BOOKS_URL = "http://localhost:5000/all-books";
+
+
+const ALL_BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 const AllBooksPage = async () => {
   const res = await fetch(ALL_BOOKS_URL, {

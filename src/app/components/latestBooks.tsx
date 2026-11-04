@@ -1,10 +1,13 @@
 
 import { BookCard, type Book } from "@/app/components/book-card";
 import { BookOpenTextIcon } from "lucide-react";
+import { connection } from "next/server";
 
-const LATEST_BOOKS_URL = "http://localhost:5000/latest-books";
+const LATEST_BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/latest-books`;
 
 const LatestBooks = async () => {
+  await connection();
+
   const res = await fetch(LATEST_BOOKS_URL, {
     cache: "no-store",
   });

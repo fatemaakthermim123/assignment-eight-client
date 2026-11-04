@@ -8,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "cn";
 import { LibraryBigIcon, LockIcon } from "lucide-react";
 
-const API_URL = "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const MyBooksPage = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
