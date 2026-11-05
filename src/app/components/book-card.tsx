@@ -79,7 +79,7 @@ export function BookCard({ book }: BookCardProps) {
 
       <CardFooter className="mt-auto p-4 pt-3">
         <Link
-          href={` bookdetails/${book._id}`}
+          href={`/bookdetails/${book._id}`}
           className={cn(
             buttonVariants({ variant: "outline" }),
             "w-full rounded-xl border-border/70 bg-transparent transition-all duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/25",

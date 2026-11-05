@@ -21,7 +21,7 @@ export default function NotFound() {
         <Button
           size="lg"
           variant="outline"
-          render={<Link href="/Users">View all users</Link>}
+          render={<Link href="/Users">View all books</Link>}
         />
       </div>
     </div>

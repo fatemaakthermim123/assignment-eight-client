@@ -129,7 +129,7 @@ export function MyBookCard({ book }: MyBookCardProps) {
           {/* Actions */}
           <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
             <Link
-              href={` bookdetails/${book._id}`}
+              href={`/bookdetails/${book._id}`}
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
                 "rounded-xl border-border/70 transition-all duration-200 hover:border-primary hover:bg-primary hover:text-primary-foreground",
