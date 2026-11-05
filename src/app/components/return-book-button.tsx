@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { Loader2Icon, Undo2Icon } from "lucide-react";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -24,8 +25,11 @@ export function ReturnBookButton({
   const handleReturn = async () => {
     setLoading(true);
 
+        const token = await getTokenFromClient();
+
     const res = await fetch(`${API_URL}/borrows/${borrowId}`, {
       method: "DELETE",
+      headers: { authorization: `Bearer ${token}` },
     });
 
     setLoading(false);

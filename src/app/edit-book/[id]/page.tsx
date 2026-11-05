@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import { cn } from "cn";
 import { LockIcon, PencilIcon, SaveIcon } from "lucide-react";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
@@ -22,6 +23,7 @@ const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
    
 
 const EditBookPage = () => {
+  
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
@@ -29,12 +31,19 @@ const EditBookPage = () => {
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    fetch(`${API_URL}/${id}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => setBook(data))
-      .finally(() => setLoading(false));
+    const loadBook = async () => {
+      const token = await getTokenFromClient();
+
+      const res = await fetch(`${API_URL}/${id}`, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+
+      setBook(res.ok ? await res.json() : null);
+      setLoading(false);
+    };
+
+    loadBook();
   }, [id]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -50,10 +59,16 @@ const EditBookPage = () => {
             availableCopies: Number(fd.get("availableCopies")),
     };
 
+       const token = await getTokenFromClient();
+
     const res = await fetch(`${API_URL}/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(updatedBook),
+    
     });
 
     if (res.ok) {

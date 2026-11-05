@@ -10,7 +10,7 @@ const ALL_BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 const AllBooksPage = async () => {
   const res = await fetch(ALL_BOOKS_URL, {
-    cache: "no-store",
+    
   });
   const books: Book[] = await res.json();
 

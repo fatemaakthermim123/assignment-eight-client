@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "cn";
 import { BookMarkedIcon, LockIcon } from "lucide-react";
+import { getTokenFromServer } from "@/lib/getTokenFromServer";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -58,8 +59,11 @@ const MyBorrowsPage = async () => {
     );
   }
 
+   const token = await getTokenFromServer();
+
   const res = await fetch(`${API_URL}/borrows/${user.email}`, {
-    cache: "no-store",
+    
+    headers: { authorization: `Bearer ${token}` },
   });
   const borrows: Borrow[] = res.ok ? await res.json() : [];
 

@@ -28,6 +28,7 @@ import {
   UserRoundIcon,
 } from "lucide-react";
 import { cn } from "cn";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
@@ -45,8 +46,11 @@ export function MyBookCard({ book }: MyBookCardProps) {
   const handleDelete = async () => {
     setDeleting(true);
 
+        const token = await getTokenFromClient();
+
     const res = await fetch(`${API_URL}/${book._id}`, {
       method: "DELETE",
+      headers: { authorization: `Bearer ${token}` },
     });
 
     setDeleting(false);

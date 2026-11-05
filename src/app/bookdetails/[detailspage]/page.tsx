@@ -17,8 +17,10 @@ import {
   UserRoundIcon,
   UserRoundPlusIcon,
 } from "lucide-react";
+import { getTokenFromServer } from "@/lib/getTokenFromServer";
 
 const ALL_BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
+
 
 type DetailsPageProps = {
   params: Promise<{ detailspage: string }>;
@@ -26,13 +28,19 @@ type DetailsPageProps = {
 
 const DetailsPage = async ({ params }: DetailsPageProps) => {
   const { detailspage: id } = await params;
-
+const token= await getTokenFromServer()
+console.log(token)
   let book: Book | null = null;
 
   try {
     const res = await fetch(`${ALL_BOOKS_URL}/${id}`, {
-      cache: "no-store",
-    });
+     
+    
+     headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`
+     },
+        },);
 
     if (!res.ok) {
       notFound();

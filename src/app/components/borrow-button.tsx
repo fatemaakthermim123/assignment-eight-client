@@ -22,6 +22,7 @@ import {
   Loader2Icon,
   LockIcon,
 } from "lucide-react";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -65,14 +66,18 @@ export function BorrowButton({
 
     setLoading(true);
 
+        const token = await getTokenFromClient();
+
     const res = await fetch(`${API_URL}/borrows`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         bookId,
         bookTitle,
         bookImage,
-        userEmail: user.email,
       }),
     });
     const data = await res.json();

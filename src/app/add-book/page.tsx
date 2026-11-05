@@ -19,12 +19,14 @@ import {
   SparklesIcon,
   UserRoundIcon,
 } from "lucide-react";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const BOOKS_URL = `${process.env.NEXT_PUBLIC_API_URL}/all-books`;
 
 const CATEGORIES = ["Fiction", "Science", "History", "Kids", "Others"];
 
 const AddBookPage = () => {
+
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
@@ -61,9 +63,13 @@ const AddBookPage = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(BOOKS_URL, {
+        const token=await getTokenFromClient()
+       const res = await fetch(BOOKS_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(newBook),
       });
 

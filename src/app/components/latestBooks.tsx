@@ -9,7 +9,7 @@ const LatestBooks = async () => {
   await connection();
 
   const res = await fetch(LATEST_BOOKS_URL, {
-    cache: "no-store",
+   
   });
 
   const books: Book[] = await res.json();

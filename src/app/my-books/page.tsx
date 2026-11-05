@@ -7,6 +7,7 @@ import { MyBookCard } from "@/app/components/my-book-card";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "cn";
 import { LibraryBigIcon, LockIcon } from "lucide-react";
+import { getTokenFromServer } from "@/lib/getTokenFromServer";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -37,8 +38,12 @@ const MyBooksPage = async () => {
     );
   }
 
+    const token = await getTokenFromServer();
+
   const res = await fetch(`${API_URL}/my-books/${user.email}`, {
-    cache: "no-store",
+    
+    headers: { authorization: `Bearer ${token}` },
+  
   });
   const books: Book[] = res.ok ? await res.json() : [];
 
