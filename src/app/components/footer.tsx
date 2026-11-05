@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
   Mail,
@@ -172,19 +171,17 @@ const Footer = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5">
-            <Link
-              href="/privacy-policy"
-              className="transition hover:text-[#722F37]"
+            <span
+              className="cursor-pointer transition hover:text-[#722F37]"
             >
               Privacy Policy
-            </Link>
+            </span>
 
-            <Link
-              href="/terms"
-              className="transition hover:text-[#722F37]"
+            <span
+              className="cursor-pointer transition hover:text-[#722F37]"
             >
               Terms & Conditions
-            </Link>
+            </span>
           </div>
 
           <p>
